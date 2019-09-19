@@ -1,0 +1,26 @@
+pwd	- print working directory	eg:	$pwd
+ls	- list all the files/directory eg:	$ls, ls -al
+mkdir	- make a directory eg: $mkdir Rajesh
+rmdir	- delete a directory eg: $rmdir Rajesh
+rm	- delete files and directories. Use -r for directory. eg: $rm -r Rajesh
+touch - create a file. eg: $touch new.txt
+cp - copy files. eg: $cp new.txt /home/rajesh/testFolder
+mv - move/rename files. eg: mn new.txt newer.txt
+locate - to locate(search) a file. eg: $locate newer.txt
+sudo - superuser do.
+df - disk space in each partitions. eg: $df -m //to show in megabytes
+du - disk usage of a file in the system. eg: $du folderName
+uname - tho show the information about the system the linux distro is running. eg: $uname -a
+apt-get - to install packages. eg: $sudo apt-get install git
+chmod - to change the permissions. //Look this in detail. Important command.
+hostname - to know the name of your host. eg: $hostname //shows the name; or $hostname -I //shows the ip address of the network
+ping - check your connection to a server. eg; $ping google.com
+
+Other commands: clear, tab, ctrl+c, ctrl+z, exit, sudo halt, sudo reboot
+
+Unable to read repository at http://coderplus.com/m2e-update-sites/maven-dependency-plugin/content.xml.
+sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+
+keytool -import -trustcacerts -noprompt -keystore "C:\Program Files (x86)\Java\jdk1.7.0_80\jre\lib\security\cacerts" -storepass changeit -alias $REMHOST -file $REMHOST.pem
+
+192.168.1.46

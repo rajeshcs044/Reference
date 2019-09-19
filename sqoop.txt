@@ -1,0 +1,217 @@
+#sqoop certification topics
+sqoop-import 
+sqoop-export
+sqoop-eval
+sqoop-list-databases
+sqoop-list-table
+sqoop-help
+
+Sqoop:
+
+sqoop import --connect jdbc:mysql://localhost/retail_db \
+--username root --password cloudera \
+--table customers --target-dir /user/cloudera/import_tables/retail_db/customers
+
+jdbc:mysql://localhost/retail_db
+
+sqoop list-databases \
+  --connect jdbc:mysql://localhost \
+  --username root \
+  --password cloudera
+    
+sqoop list-tables \
+  --connect jdbc:mysql://localhost/retail_db \
+  --username root \
+  --password cloudera
+  
+sqoop eval \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--query "select * from orders limit 10"
+
+sqoop eval \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--query "insert into orders values(101010, \"2018-10-31 00:00:00.0\", 101010, \"Dummy\")"
+
+sqoop import \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--table order_items \
+--target-dir /user/cloudera/sqoop_import/retail_db/order_items \
+--delete-target-dir \
+--num-mappers 2
+
+sqoop import \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--table order_items \
+--target-dir /user/cloudera/sqoop_import/retail_db/order_items \
+--delete-target-dir \
+--split-by column_name
+--autoreset-to-one-mapper
+
+sqoop import \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--table order_items \
+--target-dir /user/cloudera/sqoop_import/retail_db/order_items \
+--delete-target-dir \
+--num-mappers 3 \ 
+--as-avrodatafile
+--as-sequencefile
+--as-textfile
+--as-parquetfile
+
+sqoop import \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--table order_items \
+--target-dir /user/cloudera/sqoop_import/retail_db/order_items \
+--delete-target-dir \
+--num-mappers 5 \ 
+--compress \
+--compression-codec snappy
+/etc/hadoop/conf/core-site.xml
+Gzip
+Deflate
+Snappy
+Others
+
+sqoop import \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--table order_items \
+--target-dir /user/cloudera/sqoop_import/retail_db/order_items \
+--delete-target-dir \
+--boundary-query 'select min(order_item_id), max(order_item_id) from order_items where order_item_id > 99999'
+
+sqoop import \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--table order_items \
+--target-dir /user/cloudera/sqoop_import/retail_db/order_items \
+--delete-target-dir \
+--columns order_item_id,order_item_order_id
+--num-mappers 3
+
+#table and/or columns is mutually exclusive with query
+#for query split-by is mandatory if num-mappers is greater than 1
+#query should have a placeholder $conditions
+
+sqoop import \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--table order_items \
+--delete-target-dir \
+--hive-import \
+--hive-database default \
+--hive-table order_items \
+--num-mappers 2
+
+sqoop import \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--table order_items \
+--delete-target-dir \
+--hive-import \
+--hive-database default \
+--hive-table order_items \
+--hive-overwrite
+--num-mappers 2
+
+sqoop import \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--table order_items \
+--delete-target-dir \
+--hive-import \
+--hive-database default \
+--hive-table order_items \
+--create-hive-table
+
+sqoop import \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--warehouse-dir /user/cloudera/sqoop_import/retail_db \
+--autoreset-to-one-mapper
+
+sqoop export \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--export-dir /user/cloudera/sqoop_import/retail_db
+--table order_items_dup \
+--input-fields-terminated-by "\001"
+
+sqoop export \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--export-dir /user/cloudera/sqoop_import/retail_db
+--table order_items_dup \
+--update-key primary_key_column_name \
+--update-mode allowinsert \
+--input-fields-terminated-by "\001"
+
+sqoop export \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--export-dir /user/cloudera/sqoop_import/retail_db
+--table order_items_dup \
+--staging-table order_items_dup_stage /
+--input-fields-terminated-by "\001"
+
+Hive table: daily_revenue - > mysql table: daily_revenue_stage;
+insert into daily_revenue select * from daily_revenue_stage;
+
+sqoop export \
+--connect jdbc:mysql://localhost/retail_db \
+--username root \
+--password cloudera \
+--export-dir /user/cloudera/sqoop_import/retail_db
+--table order_items_dup \
+--staging-table order_items_dup_stage /
+--clear-staging-table \
+--input-fields-terminated-by "\001"
+
+HIVE:
+
+set hive.metastore.warehouse.dir
+/user/hive/warehouse
+
+create table orders (
+     order_id int, 
+     order_date string,
+    order_customer_id int,
+    order_status string
+    ) row format delimited fields terminated by ','
+    stored as textfile;
+
+	
+load data local inpath '/tmp/orders' into table orders;
+load data local inpath '/tmp/orders' overwrite into table orders;
+
+dfs -ls /user/hive/warehouse/rajesh_retail_db.db/orders;
+
+create table order_items (order_item_id int, order_item_order_id int, order_item_product_id int, order_item_quantity int, 
+order_item_subtotal float, order_item_product_price float) row format delimited fields terminated by ',' stored as textfile;
+
+load data inpath '/user/cloudera/order_items/' overwrite into table order_items;
+
+
+
+

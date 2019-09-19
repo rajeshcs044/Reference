@@ -1,0 +1,35 @@
+
+pyspark  --packages com.databricks:spark-csv_2.10:1.5.0,com.databricks:spark-avro_2.10:4.0.0
+pyspark --packages com.databricks:spark-csv_2.10:1.0.3
+pyspark --packages com.databricks:spark-avro_2.10:4.0.0
+
+
+spark-shell  --conf "spark.driver.extraJavaOptions=-Dhttp.proxyHost=<proxyHost> -Dhttp.proxyPort=<proxyPort> -Dhttps.proxyHost=<proxyHost> -Dhttps.proxyPort=<proxyPort>" --packages com.databricks:spark-csv_2.10:1.5.0
+
+systemt.datascientistworkbench.com
+
+mysql basic commands:
+
+#connect to mysql
+mysql -uroot -pcloudera
+
+#to list all the databases
+show databases;
+
+#to use a particular database
+use database_name;
+
+#to list all the tables under that database
+show tables;
+
+#eg query: to show the first 10 records in a tables
+select * from table_name limit 10;
+
+Sqoop basic commands:
+
+#connect to a MySQL database named employees on the host database.example.com
+sqoop import --connect jdbc:mysql://database.example.com/employees
+
+sqoop import --connect jdbc:mysql://localhost/retail_db \
+--username root --password cloudera \
+--table customers --target-dir /user/cloudera/import_tables/retail_db/customers
